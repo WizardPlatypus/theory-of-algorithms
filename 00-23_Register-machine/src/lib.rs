@@ -24,10 +24,10 @@ impl Command {
 impl std::fmt::Display for Command {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Command::Step { index } => write!(f, "S {}", index),
-            Command::Transfer { src, dst } => write!(f, "T {} {}", src, dst),
-            Command::Zero { index } => write!(f, "Z {}", index),
-            Command::Jump { a, b, q } => write!(f, "J {} {} {}", a, b, q),
+            Command::Step { index } => write!(f, "S({})", index),
+            Command::Transfer { src, dst } => write!(f, "T({},{})", src, dst),
+            Command::Zero { index } => write!(f, "Z({})", index),
+            Command::Jump { a, b, q } => write!(f, "J({},{},{})", a, b, q),
         }
     }
 }

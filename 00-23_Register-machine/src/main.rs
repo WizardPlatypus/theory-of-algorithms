@@ -71,15 +71,9 @@ fn main() -> Result<()> {
     };
 
     if args.verbose {
-        print!("| cursor | count | command |");
+        print!("cursor count command");
         for i in 0..registers.len() {
-            print!(" R{} |", i);
-        }
-        println!();
-
-        print!("|-|-|-|");
-        for _ in 0..registers.len() {
-            print!("-|");
+            print!(" R{}", i);
         }
         println!();
 
@@ -111,18 +105,19 @@ fn main() -> Result<()> {
             display(cursor, count, Some(&commands[cursor - 1]), &registers);
         }
     }
-    println!("{}", registers[0]);
+    println!("R0: {}", registers[0]);
+    println!("Operations: {}", count - 1);
     Ok(())
 }
 
 fn display(cursor: usize, count: usize, command: Option<&Command>, registers: &Vec<usize>) {
     if let Some(c) = command {
-        print!("| {}) | [{}] | {} |", cursor, count, c);
+        print!("{}) [{}] {}", cursor, count, c);
     } else {
-        print!("| {}) | [{}] | - |", cursor, count);
+        print!("{}) [{}] -", cursor, count);
     }
     for r in registers {
-        print!(" {} |", r);
+        print!(" {}", r);
     }
     println!();
 }
