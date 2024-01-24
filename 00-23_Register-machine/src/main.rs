@@ -59,22 +59,32 @@ fn main() {
         .read_line(&mut buffer)
         .expect("Failed to read number of registers");
 
-    let n: usize = buffer.parse().expect("Failed to parse n");
+    let n: usize = buffer.trim().parse().expect("Failed to parse n");
     let mut r: Vec<Nat> = Vec::with_capacity(n);
     for i in 0..n {
         print!("Enter initial state of register #{}.", i);
         std::io::stdin()
             .read_line(&mut buffer)
-            .expect("Failed to read register contents.");
-        r.push(buffer.parse().expect("Failed to parse register contents"));
+            .expect("Failed to read register contents");
+        r.push(
+            buffer
+                .trim()
+                .parse()
+                .expect("Failed to parse register contents"),
+        );
     }
 
-    let mut q: Vec<Command> = Vec::new();
+    let mut commands: Vec<Command> = Vec::new();
     println!("Enter commands:");
     for line in std::io::stdin().lines() {
         println!("[debug] read {:?}", line);
-        let command = Command::de(line.unwrap().as_str()).expect("Failed to deserialize Command.");
-        q.push(command);
+        let command = Command::de(line.unwrap().as_str()).expect("Failed to deserialize Command");
+        commands.push(command);
+    }
+    
+    println!("Commands:");
+    for c in &commands {
+	println!("{}", c.ser());
     }
 }
 
