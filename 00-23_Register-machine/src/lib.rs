@@ -19,34 +19,27 @@ impl Command {
     pub fn jump(a: usize, b: usize, q: usize) -> Command {
         Command::Jump { a, b, q }
     }
+}
 
-    pub fn ser(&self) -> String {
-        use Command::{Jump, Step, Transfer, Zero};
-        match self {
-            Step { index } => format!("S {}", index),
-            Transfer { src, dst } => format!("T {} {}", src, dst),
-            Zero { index } => format!("Z({})", index),
-            Jump { a, b, q } => format!("J {} {} {}", a, b, q),
+impl<'a> std::convert::TryFrom<&'a str> for Command {
+    type Error = &'a str;
+    fn try_from(value: &'a str) -> Result<Command, Self::Error> {
+        let key = value.chars().next().ok_or(value)?;
+        let mut args: Vec<usize> = Vec::new();
+        for x in value[2..].split(' ') {
+            args.push(x.parse().map_err(|_| value)?);
         }
-    }
-
-    pub fn de(s: &str) -> Option<Command> {
-	log::trace!("Deserializing {:?} as Command", s);
-        let key = s.chars().next().expect("Expected at least 1 char.");
-        let args: Vec<usize> = s[2..]
-            .split(' ')
-            .map(|x| x.parse().expect("Failed to parse as number"))
-            .collect();
         if key == 'S' {
-            Some(Command::step(args[0]))
+            Ok(Command::step(args[0]))
         } else if key == 'T' {
-            Some(Command::transfer(args[0], args[1]))
+            Ok(Command::transfer(args[0], args[1]))
         } else if key == 'Z' {
-            Some(Command::zero(args[0]))
+            Ok(Command::zero(args[0]))
         } else if key == 'J' {
-            Some(Command::jump(args[0], args[1], args[2]))
+            Ok(Command::jump(args[0], args[1], args[2]))
         } else {
-            None
+            log::debug!("{:?} is not a Command", value);
+            Err(value)
         }
     }
 }
@@ -54,11 +47,11 @@ impl Command {
 #[cfg(test)]
 mod tests {
     #[test]
-    pub fn de_works() {
+    pub fn try_from_works() {
         use crate::Command;
-        assert!(Command::de("S 1").unwrap() == Command::step(1));
-        assert!(Command::de("T 2 3").unwrap() == Command::transfer(2, 3));
-        assert!(Command::de("Z 4").unwrap() == Command::zero(4));
-        assert!(Command::de("J 1 2 3").unwrap() == Command::jump(1, 2, 3));
+        assert!(Command::try_from("S 1").unwrap() == Command::step(1));
+        assert!(Command::try_from("T 2 3").unwrap() == Command::transfer(2, 3));
+        assert!(Command::try_from("Z 4").unwrap() == Command::zero(4));
+        assert!(Command::try_from("J 1 2 3").unwrap() == Command::jump(1, 2, 3));
     }
 }
