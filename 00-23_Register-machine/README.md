@@ -1,6 +1,6 @@
 # What dis
 
-This is an interpreter for a very basic (Register Machine)[https://en.wikipedia.org/wiki/Register_machine].
+This is an interpreter for a very basic [Register Machine](https://en.wikipedia.org/wiki/Register_machine).
 
 There are 4 operations awailable:
 - `S X` - STEP X - increase value in register X by 1.
@@ -10,7 +10,7 @@ There are 4 operations awailable:
 
 # Usage
 
-This project is built with (`cargo`)[]:
+This project is built with [`cargo`](https://dev-doc.rust-lang.org/beta/cargo/commands/cargo.html):
 ```bash
 cargo build
 ```
@@ -30,4 +30,4 @@ To see a few log messages:
 RUST_LOG=trace cargo run -- samples/06_x-y.txt 5 3
 ```
 
-The current number of operations total is capped at 100, to help exit infinite loops and prevent too large outputs.
+The current total number of operations is capped at 100, to help exit infinite loops and prevent too large outputs.
