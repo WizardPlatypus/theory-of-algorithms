@@ -10,6 +10,12 @@ struct Args {
     file: PathBuf,
     /// Register values
     registers: Vec<usize>,
+    /// Whether to show the steps
+    #[arg(short, long, action)]
+    verbose: bool,
+    /// Stop after this many operations
+    #[arg(short, long)]
+    stop: Option<usize>,
 }
 
 fn main() -> Result<()> {
@@ -58,20 +64,27 @@ fn main() -> Result<()> {
     let mut cursor = 0;
     let mut count = 0;
     let mut jump = 0;
+    let stop = if let Some(value) = &args.stop {
+        *value
+    } else {
+        0
+    };
 
-    print!("| cursor | count | command |");
-    for i in 0..registers.len() {
-        print!(" R{} |", i);
+    if args.verbose {
+        print!("| cursor | count | command |");
+        for i in 0..registers.len() {
+            print!(" R{} |", i);
+        }
+        println!();
+
+        print!("|-|-|-|");
+        for _ in 0..registers.len() {
+            print!("-|");
+        }
+        println!();
+
+        display(cursor, count, None, &registers);
     }
-    println!();
-
-    print!("|-|-|-|");
-    for _ in 0..registers.len() {
-        print!("-|");
-    }
-    println!();
-
-    display(cursor, count, None, &registers);
 
     loop {
         count += 1;
@@ -81,7 +94,7 @@ fn main() -> Result<()> {
             cursor = jump;
             jump = 0;
         }
-        if cursor > commands.len() || count > 100 {
+        if cursor > commands.len() || (stop > 0 && count > stop) {
             break;
         }
         match &commands[cursor - 1] {
@@ -94,8 +107,11 @@ fn main() -> Result<()> {
                 }
             }
         }
-        display(cursor, count, Some(&commands[cursor - 1]), &registers);
+        if args.verbose {
+            display(cursor, count, Some(&commands[cursor - 1]), &registers);
+        }
     }
+    println!("{}", registers[0]);
     Ok(())
 }
 
