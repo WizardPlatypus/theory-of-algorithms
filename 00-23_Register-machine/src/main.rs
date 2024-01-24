@@ -91,7 +91,6 @@ fn main() -> Result<()> {
             Command::Jump { a, b, q } => {
                 if registers[*a] == registers[*b] {
                     jump = *q;
-                    continue;
                 }
             }
         }
@@ -102,9 +101,9 @@ fn main() -> Result<()> {
 
 fn display(cursor: usize, count: usize, command: Option<&Command>, registers: &Vec<usize>) {
     if let Some(c) = command {
-	print!("| {}) | [{}] | {} |", cursor, count, c);
+        print!("| {}) | [{}] | {} |", cursor, count, c);
     } else {
-	print!("| {}) | [{}] | - |", cursor, count);
+        print!("| {}) | [{}] | - |", cursor, count);
     }
     for r in registers {
         print!(" {} |", r);
