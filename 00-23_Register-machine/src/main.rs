@@ -55,7 +55,7 @@ fn main() -> Result<()> {
         };
         registers.push(r);
     }
-    let mut cursor = 1;
+    let mut cursor = 0;
     let mut count = 0;
     let mut jump = 0;
 
