@@ -21,6 +21,17 @@ impl Command {
     }
 }
 
+impl std::fmt::Display for Command {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Command::Step { index } => write!(f, "S {}", index),
+            Command::Transfer { src, dst } => write!(f, "T {} {}", src, dst),
+            Command::Zero { index } => write!(f, "Z {}", index),
+            Command::Jump { a, b, q } => write!(f, "J {} {} {}", a, b, q),
+        }
+    }
+}
+
 impl<'a> std::convert::TryFrom<&'a str> for Command {
     type Error = &'a str;
     fn try_from(value: &'a str) -> Result<Command, Self::Error> {

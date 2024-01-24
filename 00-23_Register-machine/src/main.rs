@@ -55,20 +55,25 @@ fn main() -> Result<()> {
         };
         registers.push(r);
     }
-    let mut cursor = 0;
+    let mut cursor = 1;
     let mut count = 0;
     let mut jump = 0;
 
-    let display = |cursor, count, registers| {
-        print!("{}) [{}]", cursor, count);
-        for r in registers {
-            print!(" {}", r);
-        }
-        println!();
-    };
-    display(&cursor, &count, &registers);
+    print!("| cursor | count | command |");
+    for i in 0..registers.len() {
+        print!(" R{} |", i);
+    }
+    println!();
 
-    while cursor <= commands.len() {
+    print!("|-|-|-|");
+    for _ in 0..registers.len() {
+        print!("-|");
+    }
+    println!();
+
+    display(cursor, count, None, &registers);
+
+    loop {
         count += 1;
         if jump == 0 {
             cursor += 1;
@@ -76,7 +81,10 @@ fn main() -> Result<()> {
             cursor = jump;
             jump = 0;
         }
-        match &commands[cursor] {
+        if cursor > commands.len() || count > 100 {
+            break;
+        }
+        match &commands[cursor - 1] {
             Command::Step { index } => registers[*index] += 1,
             Command::Transfer { src, dst } => registers[*dst] = registers[*src],
             Command::Zero { index } => registers[*index] = 0,
@@ -87,7 +95,19 @@ fn main() -> Result<()> {
                 }
             }
         }
-	display(&cursor, &count, &registers);
+        display(cursor, count, Some(&commands[cursor - 1]), &registers);
     }
     Ok(())
+}
+
+fn display(cursor: usize, count: usize, command: Option<&Command>, registers: &Vec<usize>) {
+    if let Some(c) = command {
+	print!("| {}) | [{}] | {} |", cursor, count, c);
+    } else {
+	print!("| {}) | [{}] | - |", cursor, count);
+    }
+    for r in registers {
+        print!(" {} |", r);
+    }
+    println!();
 }
