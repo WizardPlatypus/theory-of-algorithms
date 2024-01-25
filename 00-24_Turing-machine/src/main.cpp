@@ -5,60 +5,10 @@
 #include <stdint.h>
 #include <vector>
 #include "node.hpp"
-
-struct RuleKey {
-  char state;
-  char symbol;
-
-  bool operator==(const RuleKey &other) const {
-    return this->state == other.state && this->symbol == other.symbol;
-  }
-
-  bool operator<(const RuleKey &other) const {
-    if (this->state == other.state) {
-      return this->symbol < other.symbol;
-    }
-    return this->state < other.state;
-  }
-};
-
-std::istream &operator>>(std::istream &in, RuleKey &key) {
-  in >> key.state >> key.symbol;
-  return in;
-}
-
-enum Move {
-  Left,
-  Right,
-  None
-};
-  
-std::istream & operator>>(std::istream & in, Move & move) {
-  char c;
-  in >> c;
-  if (c == 'L') {
-    move = Move::Left;
-  } else if (c == 'R') {
-    move = Move::Right;
-  } else {
-    move = Move::None;
-  }
-  return in;
-}
-
-struct RuleValue {
-  char state;
-  char symbol;
-  Move move;
-};
-
-std::istream &operator>>(std::istream &in, RuleValue &value) {
-  in >> value.state >> value.symbol >> value.move;
-  return in;
-}
+#include "rule.hpp"
 
 int main() {
-  // /*
+  /*
   std::vector<uint64_t> nums{3, 4};
   Node *first = init_nodes(nums);
   Node *curr = first;
@@ -69,12 +19,13 @@ int main() {
   std::cout << std::endl;
   return 0;
   // */
-  /*
+  // /*
   std::map<RuleKey, RuleValue> rules;
   for (int i = 0; i < 3; i++) {
     RuleKey key;
     RuleValue value;
-    std::cin >> key >> value;
+    key.read(std::cin);
+    value.read(std::cin);
     rules[key] = value;
   }
 
@@ -88,5 +39,5 @@ int main() {
     }
     std::cout << std::endl;
   }
-  */
+  // */
 }
