@@ -8,18 +8,18 @@
 #include "rule.hpp"
 
 int main() {
-  /*
+  // /*
   std::vector<uint64_t> nums{3, 4};
   Node *first = init_nodes(nums);
   Node *curr = first;
   do {
-    std::cout << curr->symbol;
+    std::cout << curr->cell;
     curr = curr->right_node;
   } while (curr != nullptr);
   std::cout << std::endl;
   return 0;
   // */
-  // /*
+  /*
   std::map<RuleKey, RuleValue> rules;
   for (int i = 0; i < 3; i++) {
     RuleKey key;

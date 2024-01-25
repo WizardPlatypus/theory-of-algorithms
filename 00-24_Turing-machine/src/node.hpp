@@ -2,13 +2,16 @@
 #include <stdint.h>
 #include <vector>
 
-struct Node {
-  Node(char symbol, int index = 0, Node *left_node = nullptr,
-       Node *right_node = nullptr);
-  Node *left(char symbol = '-');
-  Node *right(char symbol = '-');
+// | # -
+enum Cell { Stick, Sharp, Empty };
 
-  char symbol;
+struct Node {
+  Node(Cell cell = Cell::Empty, int index = 0, Node *left_node = nullptr,
+       Node *right_node = nullptr);
+  Node *left(Cell cell = Cell::Empty);
+  Node *right(Cell cell = Cell::Empty);
+
+  Cell cell;
   Node *left_node;
   Node *right_node;
   int index;
