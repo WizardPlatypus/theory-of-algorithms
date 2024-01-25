@@ -2,7 +2,7 @@
 #include <istream>
 #include <ostream>
 
-std::istream &operator>>(std::istream &in, Cell &cell) {
+void read_cell(std::istream &in, Cell &cell) {
   char c;
   in >> c;
   if (c == '|') {
@@ -12,10 +12,9 @@ std::istream &operator>>(std::istream &in, Cell &cell) {
   } else {
     cell = Cell::Empty;
   }
-  return in;
 }
 
-std::ostream &operator<<(std::ostream &out, const Cell &cell) {
+void write_cell(std::ostream &out, const Cell &cell) {
   char c;
   if (cell == Cell::Stick) {
     c = '|';
@@ -25,7 +24,6 @@ std::ostream &operator<<(std::ostream &out, const Cell &cell) {
     c = '-';
   }
   out << c;
-  return out;
 }
 
 Node *init_nodes(const std::vector<uint64_t> &list) {

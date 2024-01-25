@@ -1,5 +1,6 @@
 #pragma once
 #include <istream>
+#include "node.hpp"
 
 enum Move { Left, Right, None };
 
@@ -10,13 +11,13 @@ struct RuleKey {
   bool operator<(const RuleKey &other) const;
 
   char state;
-  char symbol;
+  Cell cell;
 };
 
 struct RuleValue {
   void read(std::istream &in);
 
   char state;
-  char symbol;
+  Cell cell;
   Move move;
 };
