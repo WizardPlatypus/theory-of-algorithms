@@ -1,43 +1,38 @@
 #include <cstddef>
 #include <iostream>
-#include <istream>
+#include <fstream>
+#include <sstream>
 #include <map>
 #include <stdint.h>
 #include <vector>
 #include "node.hpp"
 #include "rule.hpp"
 
-int main() {
-  // /*
-  std::vector<uint64_t> nums{3, 4};
-  Node *first = init_nodes(nums);
-  Node *curr = first;
-  do {
-    std::cout << curr->cell;
-    curr = curr->right_node;
-  } while (curr != nullptr);
-  std::cout << std::endl;
-  return 0;
-  // */
-  /*
+int main(int argc, const char* argv[]) {
+  if (argc < 2) {
+    std::cerr << "Expected program path.";
+    exit(1);
+  }
+
+  std::fstream file(argv[1]);
   std::map<RuleKey, RuleValue> rules;
-  for (int i = 0; i < 3; i++) {
+  while (file) {
     RuleKey key;
     RuleValue value;
-    key.read(std::cin);
-    value.read(std::cin);
+    key.read(file);
+    value.read(file);
     rules[key] = value;
   }
 
-  for (const auto &rule : rules) {
-    std::cout << "q" << rule.first.state << rule.first.symbol << " -> q"
-              << rule.second.state << rule.second.symbol;
-    if (rule.second.move > 0) {
-      std::cout << "R";
-    } else if (rule.second.move < 0) {
-      std::cout << "L";
-    }
-    std::cout << std::endl;
+  std::vector<uint64_t> nums;
+  for (int i = 0; i + 2 < argc; i++) {
+    std::stringstream buffer;
+    buffer << argv[i + 2];
+    uint64_t value;
+    buffer >> value;
+    nums.push_back(value);
   }
-  // */
+  
+  Node *first = init_nodes(nums);
+  std::cout << "Yay!" << std::endl;
 }
