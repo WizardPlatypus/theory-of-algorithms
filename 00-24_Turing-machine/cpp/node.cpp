@@ -1,34 +1,8 @@
 #include "../hpp/node.hpp"
-#include <istream>
-#include <ostream>
-
-void read_cell(std::istream &in, Cell &cell) {
-  char c;
-  in >> c;
-  if (c == '|') {
-    cell = Cell::Stick;
-  } else if (c == '#') {
-    cell = Cell::Sharp;
-  } else {
-    cell = Cell::Empty;
-  }
-}
-
-void write_cell(std::ostream &out, const Cell &cell) {
-  char c;
-  if (cell == Cell::Stick) {
-    c = '|';
-  } else if (cell == Cell::Sharp) {
-    c = '#';
-  } else {
-    c = '-';
-  }
-  out << c;
-}
 
 Node *init_nodes(const std::vector<uint64_t> &list) {
   if (list.size() == 0) {
-    return new Node(Cell::Empty);
+    return new Node(Cell::Lambda);
   }
 
   Node *first = new Node(Cell::Stick);

@@ -1,14 +1,19 @@
+#include "../hpp/cell.hpp"
+#include "../hpp/move.hpp"
 #include "../hpp/node.hpp"
 #include "../hpp/rule.hpp"
 #include <cstddef>
 #include <fstream>
 #include <iostream>
+#include <iterator>
 #include <map>
+#include <regex>
 #include <sstream>
 #include <stdint.h>
 #include <vector>
 
 void display(Node *curr, std::ostream &out = std::cout);
+std::map<RuleKey, RuleValue> parse_rules(const char *file);
 
 int main(int argc, const char *argv[]) {
   if (argc < 2) {
@@ -16,14 +21,12 @@ int main(int argc, const char *argv[]) {
     exit(1);
   }
 
-  std::fstream file(argv[1]);
-  std::map<RuleKey, RuleValue> rules;
-  while (file) {
-    RuleKey key;
-    RuleValue value;
-    key.read(file);
-    value.read(file);
-    rules[key] = value;
+  auto rules = parse_rules(argv[1]);
+  for (auto &rule : rules) {
+    rule.first.write(std::cout);
+    std::cout << "->";
+    rule.second.write(std::cout);
+    std::cout << std::endl;
   }
 
   std::vector<uint64_t> nums;
@@ -38,7 +41,8 @@ int main(int argc, const char *argv[]) {
   Node *first = init_nodes(nums);
   Node *curr = first;
 
-  char state = '0';
+  int state = 0;
+  bool is_final = false;
   while (1) {
     // std::cout << 'q' << state << std::endl;
     display(curr);
@@ -47,17 +51,23 @@ int main(int argc, const char *argv[]) {
       std::cout << "Reached node #" << curr->index << std::endl;
       break;
     }
+    
+    if (is_final) {
+      std::cout << "Reached final state" << std::endl;
+      break;
+    }
 
-    RuleKey key{state, curr->cell};
+    RuleKey key{state, false, curr->cell};
     if (!rules.contains(key)) {
       std::cout << "No match for q" << key.state;
-      write_cell(std::cout, key.cell);
+      cell::write(key.cell, std::cout);
       std::cout << std::endl;
       break;
     }
 
     RuleValue value = rules[key];
     state = value.state;
+    is_final = value.is_final;
     curr->cell = value.cell;
     if (value.move == Move::Right) {
       curr = curr->right();
@@ -75,7 +85,7 @@ void display(Node *node, std::ostream &out) {
   }
 
   while (node != nullptr) {
-    write_cell(out, node->cell);
+    cell::write(node->cell, out);
     node = node->right_node;
   }
   out << std::endl;
@@ -84,4 +94,33 @@ void display(Node *node, std::ostream &out) {
     out << ' ';
   }
   out << '^' << std::endl;
+}
+
+std::map<RuleKey, RuleValue> parse_rules(const char *path) {
+  std::fstream file(path);
+  std::string content;
+  content.assign((std::istreambuf_iterator<char>(file)),
+                 (std::istreambuf_iterator<char>()));
+
+  std::regex rule_regex("q(\\d+|\\*)([|#A])->q(\\d+|\\*)([|#A])([RL])?");
+  auto begin = std::sregex_iterator(content.begin(), content.end(), rule_regex);
+  auto end = std::sregex_iterator();
+
+  std::map<RuleKey, RuleValue> rules;
+  for (auto i = begin; i != end; i++) {
+    std::smatch match = *i;
+    std::stringstream buffer;
+    RuleKey key;
+    RuleValue value;
+
+    buffer << match[1] << ' ' << match[2];
+    key.read(buffer);
+
+    buffer << match[3] << ' ' << match[4] << ' ' << match[5];
+    value.read(buffer);
+
+    rules[key] = value;
+  }
+
+  return rules;
 }

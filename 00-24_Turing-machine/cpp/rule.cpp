@@ -1,6 +1,6 @@
 #include "../hpp/rule.hpp"
-#include "../hpp/node.hpp"
-#include <ostream>
+#include "../hpp/cell.hpp"
+#include "../hpp/move.hpp"
 
 bool RuleKey::operator<(const RuleKey &other) const {
   if (this->state == other.state) {
@@ -13,39 +13,49 @@ bool RuleKey::operator==(const RuleKey &other) const {
   return this->state == other.state && this->cell == other.cell;
 }
 
-std::istream &operator>>(std::istream &in, Move &move) {
-  char c;
-  in >> c;
-  if (c == 'L') {
-    move = Move::Left;
-  } else if (c == 'R') {
-    move = Move::Right;
-  } else {
-    move = Move::None;
-  }
-  return in;
-}
-
-std::ostream &operator<<(std::ostream &out, Move &move) {
-  char c;
-  if (move == Move::Left) {
-    c = 'L';
-  } else if (move == Move::Right) {
-    c = 'R';
-  } else {
-    c = 'X';
-  }
-  out << c;
-  return out;
-}
-
 void RuleKey::read(std::istream &in) {
-  in >> this->state;
-  read_cell(in, this->cell);
+  std::string s;
+  in >> s;
+  if (s == "*") {
+    this->is_final = true;
+    this->state = 0;
+  } else {
+    this->is_final = false;
+    this->state = std::stoi(s);
+  }
+  cell::read(this->cell, in);
 }
 
 void RuleValue::read(std::istream &in) {
-  in >> this->state;
-  read_cell(in, this->cell);
-  in >> this->move;
+  std::string s;
+  in >> s;
+  if (s == "*") {
+    this->is_final = true;
+    this->state = 0;
+  } else {
+    this->is_final = false;
+    this->state = std::stoi(s);
+  }
+  cell::read(this->cell, in);
+  move::read(this->move, in);
+}
+
+void RuleKey::write(std::ostream &out) const {
+  out << 'q';
+  if (this->is_final) {
+    out << '*';
+  } else {
+    out << this->state;
+  }
+  cell::write(this->cell, out);
+}
+void RuleValue::write(std::ostream &out) const {
+  out << 'q';
+  if (this->is_final) {
+    out << '*';
+  } else {
+    out << this->state;
+  }
+  cell::write(this->cell, out);
+  move::write(this->move, out);
 }
