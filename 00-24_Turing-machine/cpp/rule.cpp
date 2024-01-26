@@ -14,48 +14,23 @@ bool RuleKey::operator==(const RuleKey &other) const {
 }
 
 void RuleKey::read(std::istream &in) {
-  std::string s;
-  in >> s;
-  if (s == "*") {
-    this->is_final = true;
-    this->state = 0;
-  } else {
-    this->is_final = false;
-    this->state = std::stoi(s);
-  }
+  state::read(this->state, in);
   cell::read(this->cell, in);
 }
 
 void RuleValue::read(std::istream &in) {
-  std::string s;
-  in >> s;
-  if (s == "*") {
-    this->is_final = true;
-    this->state = 0;
-  } else {
-    this->is_final = false;
-    this->state = std::stoi(s);
-  }
+  state::read(this->state, in);
   cell::read(this->cell, in);
   move::read(this->move, in);
 }
 
 void RuleKey::write(std::ostream &out) const {
-  out << 'q';
-  if (this->is_final) {
-    out << '*';
-  } else {
-    out << this->state;
-  }
+  state::write(this->state, out);
   cell::write(this->cell, out);
 }
+
 void RuleValue::write(std::ostream &out) const {
-  out << 'q';
-  if (this->is_final) {
-    out << '*';
-  } else {
-    out << this->state;
-  }
+  state::write(this->state, out);
   cell::write(this->cell, out);
   move::write(this->move, out);
 }

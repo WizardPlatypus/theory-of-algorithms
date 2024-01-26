@@ -2,6 +2,7 @@
 #include "../hpp/move.hpp"
 #include "../hpp/node.hpp"
 #include "../hpp/rule.hpp"
+#include "../hpp/state.hpp"
 #include <cstddef>
 #include <fstream>
 #include <iostream>
@@ -41,8 +42,7 @@ int main(int argc, const char *argv[]) {
   Node *first = init_nodes(nums);
   Node *curr = first;
 
-  int state = 0;
-  bool is_final = false;
+  State state{0, false};
   while (1) {
     // std::cout << 'q' << state << std::endl;
     display(curr);
@@ -51,23 +51,23 @@ int main(int argc, const char *argv[]) {
       std::cout << "Reached node #" << curr->index << std::endl;
       break;
     }
-    
-    if (is_final) {
+
+    if (state.is_final) {
       std::cout << "Reached final state" << std::endl;
       break;
     }
 
-    RuleKey key{state, false, curr->cell};
+    RuleKey key{state, curr->cell};
     if (!rules.contains(key)) {
-      std::cout << "No match for q" << key.state;
-      cell::write(key.cell, std::cout);
+      std::cout << "No match for ";
+      state::write(key.state);
+      cell::write(key.cell);
       std::cout << std::endl;
       break;
     }
 
     RuleValue value = rules[key];
     state = value.state;
-    is_final = value.is_final;
     curr->cell = value.cell;
     if (value.move == Move::Right) {
       curr = curr->right();
