@@ -13,7 +13,8 @@
 #include <stdint.h>
 #include <vector>
 
-void display(Node *curr, std::ostream &out = std::cout);
+void display(const RuleKey &key, const RuleValue &value, Node *curr,
+             std::ostream &out = std::cout);
 std::map<RuleKey, RuleValue> parse_rules(const char *file);
 
 int main(int argc, const char *argv[]) {
@@ -23,12 +24,14 @@ int main(int argc, const char *argv[]) {
   }
 
   auto rules = parse_rules(argv[1]);
+  /*
   for (auto &rule : rules) {
     rule.first.write(std::cout);
-    std::cout << "->";
+    std::cout << " -> ";
     rule.second.write(std::cout);
     std::cout << std::endl;
   }
+  // */
 
   std::vector<uint64_t> nums;
   for (int i = 0; i + 2 < argc; i++) {
@@ -44,9 +47,6 @@ int main(int argc, const char *argv[]) {
 
   State state{0, false};
   while (1) {
-    // std::cout << 'q' << state << std::endl;
-    display(curr);
-
     if (std::abs(curr->index) > 20) {
       std::cout << "Reached node #" << curr->index << std::endl;
       break;
@@ -74,10 +74,14 @@ int main(int argc, const char *argv[]) {
     } else if (value.move == Move::Left) {
       curr = curr->left();
     }
+
+    // std::cout << 'q' << state << std::endl;
+    display(key, value, curr);
   }
 }
 
-void display(Node *node, std::ostream &out) {
+void display(const RuleKey &key, const RuleValue &value, Node *node,
+             std::ostream &out) {
   int position = 0;
   while (node->left_node != nullptr) {
     node = node->left_node;
@@ -88,6 +92,11 @@ void display(Node *node, std::ostream &out) {
     cell::write(node->cell, out);
     node = node->right_node;
   }
+  out << ' ';
+
+  key.write(out);
+  out << " -> ";
+  value.write(out);
   out << std::endl;
 
   for (int i = 0; i < position; i++) {
