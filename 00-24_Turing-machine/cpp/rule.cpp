@@ -1,5 +1,5 @@
-#include "rule.hpp"
-#include "node.hpp"
+#include "../hpp/rule.hpp"
+#include "../hpp/node.hpp"
 #include <ostream>
 
 bool RuleKey::operator<(const RuleKey &other) const {

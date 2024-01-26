@@ -1,4 +1,4 @@
-#include "node.hpp"
+#include "../hpp/node.hpp"
 #include <istream>
 #include <ostream>
 

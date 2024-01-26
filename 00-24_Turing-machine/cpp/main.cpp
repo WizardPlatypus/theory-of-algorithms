@@ -1,5 +1,5 @@
-#include "node.hpp"
-#include "rule.hpp"
+#include "../hpp/node.hpp"
+#include "../hpp/rule.hpp"
 #include <cstddef>
 #include <fstream>
 #include <iostream>

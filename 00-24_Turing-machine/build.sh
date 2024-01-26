@@ -1,2 +1,2 @@
 #!/usr/bin/sh
-clang++ src/*.cpp -o main --std=c++20
+clang++ cpp/*.cpp -o main --std=c++20
