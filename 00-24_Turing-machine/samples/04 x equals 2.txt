@@ -1,0 +1,8 @@
+q0A->q*A
+q0|->q1AR
+q1A->q*A
+q1|->q2AR
+q2A->q*|
+q2|->q3AR
+q3|->q3AR
+q3A->q*A

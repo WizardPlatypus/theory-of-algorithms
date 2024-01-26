@@ -1,0 +1,12 @@
+q0|->q1AR
+q1|->q1|R
+q1#->q1#R
+q1A->q2AL
+q2|->q3AL
+q3|->q3|L
+q3#->q3#L
+q3A->q0AR
+q2#->q*|
+q0#->q4AR
+q4|->q4AR
+q4A->q*A
