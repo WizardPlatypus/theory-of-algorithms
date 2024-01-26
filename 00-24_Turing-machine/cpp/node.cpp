@@ -1,7 +1,7 @@
 #include "../hpp/node.hpp"
 
 Node *init_nodes(const std::vector<uint64_t> &list) {
-  if (list.size() == 0) {
+  if (list.size() == 0 || list[0] == 0) {
     return new Node(Cell::Lambda);
   }
 

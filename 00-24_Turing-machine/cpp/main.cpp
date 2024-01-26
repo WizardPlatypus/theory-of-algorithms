@@ -13,8 +13,10 @@
 #include <stdint.h>
 #include <vector>
 
-void display(const RuleKey &key, const RuleValue &value, Node *curr,
-             std::ostream &out = std::cout);
+uint64_t write_tape(Node *node, std::ostream &out = std::cout);
+void write_marker(int position, std::ostream &out = std::cout);
+void write_rule(const RuleKey &key, const RuleValue &value,
+                std::ostream &out = std::cout);
 std::map<RuleKey, RuleValue> parse_rules(const char *file);
 
 int main(int argc, const char *argv[]) {
@@ -26,9 +28,7 @@ int main(int argc, const char *argv[]) {
   auto rules = parse_rules(argv[1]);
   /*
   for (auto &rule : rules) {
-    rule.first.write(std::cout);
-    std::cout << " -> ";
-    rule.second.write(std::cout);
+    write_rule(rule.first, rule.second);
     std::cout << std::endl;
   }
   // */
@@ -44,8 +44,13 @@ int main(int argc, const char *argv[]) {
 
   Node *first = init_nodes(nums);
   Node *curr = first;
-
   State state{0, false};
+
+  int position = write_tape(curr);
+  std::cout << std::endl;
+  write_marker(position);
+  std::cout << std::endl;
+
   while (1) {
     if (std::abs(curr->index) > 20) {
       std::cout << "Reached node #" << curr->index << std::endl;
@@ -75,34 +80,16 @@ int main(int argc, const char *argv[]) {
       curr = curr->left();
     }
 
-    // std::cout << 'q' << state << std::endl;
-    display(key, value, curr);
+    std::stringstream buffer;
+    std::string s;
+    write_rule(key, value, buffer);
+    buffer >> s;
+    std::cout << s << ' ';
+    position = write_tape(curr);
+    std::cout << std::endl;
+    write_marker(position + 1 + s.size());
+    std::cout << std::endl;
   }
-}
-
-void display(const RuleKey &key, const RuleValue &value, Node *node,
-             std::ostream &out) {
-  int position = 0;
-  while (node->left_node != nullptr) {
-    node = node->left_node;
-    position++;
-  }
-
-  while (node != nullptr) {
-    cell::write(node->cell, out);
-    node = node->right_node;
-  }
-  out << ' ';
-
-  key.write(out);
-  out << " -> ";
-  value.write(out);
-  out << std::endl;
-
-  for (int i = 0; i < position; i++) {
-    out << ' ';
-  }
-  out << '^' << std::endl;
 }
 
 std::map<RuleKey, RuleValue> parse_rules(const char *path) {
@@ -132,4 +119,32 @@ std::map<RuleKey, RuleValue> parse_rules(const char *path) {
   }
 
   return rules;
+}
+
+uint64_t write_tape(Node *node, std::ostream &out) {
+  uint64_t position = 0;
+  while (node->left_node != nullptr) {
+    node = node->left_node;
+    position++;
+  }
+
+  while (node != nullptr) {
+    cell::write(node->cell, out);
+    node = node->right_node;
+  }
+
+  return position;
+}
+
+void write_marker(int position, std::ostream &out) {
+  for (int i = 0; i < position; i++) {
+    out << ' ';
+  }
+  out << '^' << std::endl;
+}
+
+void write_rule(const RuleKey &key, const RuleValue &value, std::ostream &out) {
+  key.write(out);
+  out << "->";
+  value.write(out);
 }
