@@ -146,7 +146,7 @@ void write_marker(int position, std::ostream &out) {
   for (int i = 0; i < position; i++) {
     out << ' ';
   }
-  out << '^' << std::endl;
+  out << '^';
 }
 
 void write_rule(const RuleKey &key, const RuleValue &value, std::ostream &out) {
