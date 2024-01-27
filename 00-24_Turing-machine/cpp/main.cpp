@@ -51,6 +51,12 @@ int main(int argc, const char *argv[]) {
   write_marker(position);
   std::cout << std::endl;
 
+  RuleKey key;
+  RuleValue value;
+
+  std::stringstream buffer;
+  std::string s;
+
   while (1) {
     if (std::abs(curr->index) > 20) {
       std::cout << "Reached node #" << curr->index << std::endl;
@@ -62,7 +68,7 @@ int main(int argc, const char *argv[]) {
       break;
     }
 
-    RuleKey key{state, curr->cell};
+    key = RuleKey{state, curr->cell};
     if (!rules.contains(key)) {
       std::cout << "No match for ";
       state::write(key.state);
@@ -71,7 +77,7 @@ int main(int argc, const char *argv[]) {
       break;
     }
 
-    RuleValue value = rules[key];
+    value = rules[key];
     state = value.state;
     curr->cell = value.cell;
     if (value.move == Move::Right) {
@@ -80,8 +86,6 @@ int main(int argc, const char *argv[]) {
       curr = curr->left();
     }
 
-    std::stringstream buffer;
-    std::string s;
     write_rule(key, value, buffer);
     buffer >> s;
     std::cout << s << ' ';
@@ -89,6 +93,8 @@ int main(int argc, const char *argv[]) {
     std::cout << std::endl;
     write_marker(position + 1 + s.size());
     std::cout << std::endl;
+    buffer.clear();
+    s.clear();
   }
 }
 
